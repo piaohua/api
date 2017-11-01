@@ -56,6 +56,7 @@ fmt.Println("ok")
 # document
 
 # TODO:优化
+```go
 type AccessReqest struct {
 	Appid     string `json:"appid"`
 	Secret    string `json:"secret"`
@@ -102,3 +103,4 @@ func getUserInfoURL(AppId, access_token string) string {
 func getCheckAccessTokenURL(AppId, access_token string) string {
 	return fmt.Sprintf(checkAccessTokenURL, access_token, AppId)
 }
+```
