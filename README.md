@@ -19,3 +19,5 @@ xfapi   讯飞语音
 feiyu   飞语语音
 wxsdk   平台接口
 ```
+
+refer to (github.com/guidao/gopay)
