@@ -1,6 +1,6 @@
 # API Interface
 
-pay api in golang
+    pay api in golang
 
 ## Installation
 
@@ -20,4 +20,5 @@ feiyu   飞语语音
 wxsdk   平台接口
 ```
 
-refer to (github.com/guidao/gopay)
+* refer</br>
+    https://github.com/guidao/gopay
