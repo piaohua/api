@@ -18,6 +18,8 @@ wxpay   微信支付
 xfapi   讯飞语音
 feiyu   飞语语音
 wxsdk   平台接口
+alisms  云通信
+smsbao  短信宝
 ```
 
 * refer</br>
