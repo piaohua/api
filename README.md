@@ -20,6 +20,7 @@ feiyu   飞语语音
 wxsdk   平台接口
 alisms  云通信
 smsbao  短信宝
+jtpay   竣付通支付
 ```
 
 * refer</br>

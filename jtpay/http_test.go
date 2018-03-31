@@ -68,3 +68,36 @@ func TestVerify(t *testing.T) {
 	//
 	t.Log(trans.NotifyVerify(result))
 }
+
+//下单页面
+func ioswapHtml(order *JTpayOrder) (str string) {
+	str = `
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>竣付通</title>
+</head>
+<!--支付宝IOSwap支付请求提交页-->
+<body onLoad="document.yeepay.submit();">
+	<form name='yeepay' action='http://pay.jtpay.com/form/pay' method='post'  >
+	`
+	str += fmt.Sprintf("<input type='hidden' name='p1_usercode'				value='%s'>", order.P1_usercode)
+	str += fmt.Sprintf("<input type='hidden' name='p2_order'				value='%s'>      ", order.P2_order)
+	str += fmt.Sprintf("<input type='hidden' name='p3_money'				value='%s'>      ", order.P3_money)
+	str += fmt.Sprintf("<input type='hidden' name='p4_returnurl'			value='%s'>  ", order.P4_returnurl)
+	str += fmt.Sprintf("<input type='hidden' name='p5_notifyurl'			value='%s'>  ", order.P5_notifyurl)
+	str += fmt.Sprintf("<input type='hidden' name='p6_ordertime'			value='%s'>  ", order.P6_ordertime)
+	str += fmt.Sprintf("<input type='hidden' name='p7_sign'					value='%s'>       ", order.P7_sign)
+	str += fmt.Sprintf("<input type='hidden' name='p9_paymethod'			value='%s'>  ", order.P9_paymethod)
+	str += fmt.Sprintf("<input type='hidden' name='p14_customname'			value='%s'>", order.P14_customname)
+	str += fmt.Sprintf("<input type='hidden' name='p17_customip'			value='%s'>  ", order.P17_customip)
+	str += fmt.Sprintf("<input type='hidden' name='p25_terminal'			value='%s'>  ", order.P25_terminal)
+	str += fmt.Sprintf("<input type='hidden' name='p26_iswappay'			value='%s'>  ", order.P26_iswappay)
+	str += `
+	</form>
+</body>
+</html>
+`
+	return
+}
