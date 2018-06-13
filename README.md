@@ -21,6 +21,7 @@ wxsdk   平台接口
 alisms  云通信
 smsbao  短信宝
 jtpay   竣付通支付
+sms253  253云通讯
 ```
 
 * refer</br>

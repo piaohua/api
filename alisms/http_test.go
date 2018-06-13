@@ -3,7 +3,7 @@ package alisms
 import "testing"
 
 func TestSend(t *testing.T) {
-	phone := "13714592442"
+	phone := "13711111111"
 	SignName := "云通信"
 	TemplateCode := "SMS_1000000"
 	TemplateParam := "{\"name\":\"Tom\", \"code\":\"123\"}"
