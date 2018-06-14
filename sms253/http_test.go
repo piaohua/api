@@ -8,10 +8,10 @@ import (
 func TestSend(t *testing.T) {
 	code := "111111"
 	msg := fmt.Sprintf("【253云通讯】你的验证码%s", code)
-	phone := "13700000000"
-	account := "11111111111"
-	password := "78ece487e0591c4e17160d5d6ec8bbd4"
-	targetURL := ""
+	phone := "13711111111"
+	account := "CN1111111"
+	password := "xxxxxxxxxxxxxx"
+	targetURL := "http://smssh1.253.com/msg/send/json"
 	err := SendSms(targetURL, account, password, phone, msg)
 	if err != nil {
 		t.Logf("err %v", err)
