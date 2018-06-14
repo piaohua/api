@@ -1,4 +1,4 @@
-package smsbao
+package sms253
 
 import (
 	"bytes"
@@ -18,7 +18,7 @@ func SendSms(targetURL, account, password, phone, msg string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("resp %s\n", string(resp))
+	//fmt.Printf("resp %s\n", string(resp))
 	result, err := parse(resp)
 	if err != nil {
 		return err
