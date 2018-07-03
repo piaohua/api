@@ -3,91 +3,99 @@ package jtpay
 import (
 	"errors"
 	"strings"
+	"encoding/json"
 )
 
-// 下单请求参数
+//JTpayOrder 下单请求参数
 type JTpayOrder struct {
-	P1_usercode           string `json:"p1_usercode"`
-	P2_order              string `json:"p2_order"`
-	P3_money              string `json:"p3_money"`
-	P4_returnurl          string `json:"p4_returnurl"`
-	P5_notifyurl          string `json:"p5_notifyurl"`
-	P6_ordertime          string `json:"p6_ordertime"`
-	P7_sign               string `json:"p7_sign"`
-	P8_signtype           string `json:"p8_signtype"`
-	P9_paymethod          string `json:"p9_paymethod"`
-	P10_paychannelnum     string `json:"p10_paychannelnum"`
-	P11_cardtype          string `json:"p11_cardtype"`
-	P12_channel           string `json:"p12_channel"`
-	P13_orderfailertime   string `json:"p13_orderfailertime"`
-	P14_customname        string `json:"p14_customname"`
-	P15_customcontacttype string `json:"p15_customcontacttype"`
-	P16_customcontact     string `json:"p16_customcontact"`
-	P17_customip          string `json:"p17_customip"`
-	P18_product           string `json:"p18_product"`
-	P19_productcat        string `json:"p19_productcat"`
-	P20_productnum        string `json:"p20_productnum"`
-	P21_pdesc             string `json:"p21_pdesc"`
-	P22_version           string `json:"p22_version"`
-	P23_charset           string `json:"p23_charset"`
-	P24_remark            string `json:"p24_remark"`
-	P25_terminal          string `json:"p25_terminal"`
-	P26_iswappay          string `json:"p26_iswappay"`
+	P1_yingyongnum      string `json:"p1_yingyongnum"`
+	P2_ordernumber      string `json:"p2_ordernumber"`
+	P3_money            string `json:"p3_money"`
+	P6_ordertime        string `json:"p6_ordertime"`
+	P7_productcode      string `json:"p7_productcode"`
+	P8_sign             string `json:"p8_sign"`
+	P9_signtype         string `json:"p9_signtype"`
+	P10_bank_card_code  string `json:"p10_bank_card_code"`
+	P11_cardtype        string `json:"p11_cardtype"`
+	P12_channel         string `json:"p12_channel"`
+	P13_orderfailertime string `json:"p13_orderfailertime"`
+	P14_customname      string `json:"p14_customname"`
+	P15_customcontact   string `json:"p15_customcontact"`
+	P16_customip        string `json:"p16_customip"`
+	P17_product         string `json:"p17_product"`
+	P18_productcat      string `json:"p18_productcat"`
+	P19_productnum      string `json:"p19_productnum"`
+	P20_pdesc           string `json:"p20_pdesc"`
+	P21_version         string `json:"p21_version"`
+	P22_sdkversion      string `json:"p22_sdkversion"`
+	P23_charset         string `json:"p23_charset"`
+	P24_remark          string `json:"p24_remark"`
+	P25_terminal        string `json:"p25_terminal"`
+	P26_ext1            string `json:"p26_ext1"`
+	P27_ext2            string `json:"p27_ext2"`
+	P28_ext3            string `json:"p28_ext3"`
+	P29_ext4            string `json:"p29_ext4"`
 }
 
 /*
-p1_usercode                 string() 竣付通分配的商户号。 必填
-p2_order                 string(29) 用户订单号,建议 8 位商户号+14 位时间 yyyymmddhhmmss+5 位 流水号,中间用“-”分隔。例如: 12345678-20150728132430-12 345(只是建议,商户的订单号也 可以不采用这种格式)。 必填
-p3_money                 string(18) 订单金额,精确到分。例如 99.99。 必填
-p4_returnurl                 string(190) 用户明文跳转地址,用于告知付款 人支付结果。必须包含 http://或 https://。注意:该 URL 建议不包 含 GET 参数,即形如“? name=value”的内容,竣付通支 付网关不确保这些 GET 参数通过后 台方式向商户反馈时能被保留。 必填
-p5_notifyurl                 string(190) 服务器异步通知地址,用于通知商 户系统处理业务(数据库更新等)。 必须包含 http://或 https://。注意: 该 URL 建议不包含 GET 参数,即 形如“?name=value”的内容, 竣付通支付网关不确保这些 GET 参 数通过后台方式向商户反馈时能被 保留。 必填
-p6_ordertime                 string(14) 商户订单时间,格式 yyyymmddhhmmss。 必填
-p7_sign                 string(256) 商户传递参数加密值,约定 p1_ usercode + "&" +p2_ order + "&" +p3_ money + "&" +p4_returnurl + "&" +p5_ noticeurl + "&" +p6_ordertime +CompKey 连接起来进行 MD5 加密后 32 位大写字符串,(参数之 间必须添加&符号,最后 p6_ordertime 和 CompKey 之间 不加&符号。CompKey 为商户的 秘钥)目前只限定 md5 加密。 必填
-p8_signtype                 string(5) 签名验证方式:1、MD5,传固定 值 1。如果用户传递参数为空,则 默认 MD5 验证。 可空
-p9_paymethod                 string(5) 商户支付方式:固定值 3。如果用 户传递参数为空,则默认网银支付。 可空
-p10_paychannelnum                 string(12) 支付通道编码。 可空
-p11_cardtype                 string(5) 为空 可空
-p12_channel                 string(5) 为空 可空
-p13_orderfailertime                 string(14) 订单失效时间,格式为 14 位时间格 式:yyyymmddhhmmss,精确到秒,超时则此订单失效。 可空
-p14_customname                 string(128) 客户、或者玩家所在平台账号。请 务必填写真实信息,否则将影响后 续查单结果。 必填
-p15_customcontacttype                 string(10) 客户联系方式:1、email,2、 phone,3、地址。 可空
-p16_customcontact                 string(200) 客户联系方式。 可空
-p17_customip                 string(128) 客户 ip 地址,规定以 192_168_0_253 格式,如果以 “192.168.0.253”可能会发生签名 错误。 必填
-p18_product                 string(256) 商品名称。 可空
-p19_productcat                 string(200) 商品种类。 可空
-p20_productnum                 string(10) 商品数量,不传递参数默认 0。 可空
-p21_pdesc                 string(200) 商品描述。 可空
-p22_version                 string(5) 接口版本,目前默认 2.0。 可空
-p23_charset                 string(5) 提交的编码格式,1、UTF-8,2、 GBK/GB2312,默认 UTF-8。 可空
-p24_remark                 string(256) 备注。此参数我们会在下行过程中 原样返回。您可以在此参数中记录 一些数据,方便在下行过程中直接 读取。 可空
-p25_terminal                 string(5) 终端设备固定值 2。 必填
-p26_iswappay                 string(5) 支付场景固定值 3。 必填
+$compkey 		    = "040109141916ze44Mfoy";	//商户密钥
+$p1_yingyongnum	    = "01018035867501";			//商户应用号
+$p2_ordernumber     = "PHP".date("YmdHis", time());	//商户订单号
+$p3_money 		    = $_POST['p3_money'];		//商户订单金额，保留两位小数
+$p6_ordertime  	    = date("YmdHis", time());	//商户订单时间
+$p7_productcode	    = "ZFBZFWAP";				//产品支付类型编码
+$presign 		    = $p1_yingyongnum."&".$p2_ordernumber."&".$p3_money."&".$p6_ordertime."&".$p7_productcode."&".$compkey;
+$p8_sign 		    = md5($presign);		    //订单签名
+$p9_signtype 	    = "1";					    //签名方式
+$p10_bank_card_code = "";						//银行卡或卡类编码
+$p11_cardtype  	    = "";						//商户支付银行卡类型id
+$p12_channel 	    = "";						//商户支付银行卡类型长度
+$p13_orderfailertime= "";						//订单失效时间
+$p14_customname     = $_POST['p14_customname']; //商户游戏账号
+$p15_customcontact  = "";						//商户联系内容
+$p16_customip  	    = "192_168_0_253";			//付款ip地址
+$p17_product  	    = "xxx";					//商户名称
+$p18_productcat	    = "";						//商品种类
+$p19_productnum     = "";						//商品数量
+$p20_pdesc          = "";						//商品描述
+$p21_version        = "";						//对接版本
+$p22_sdkversion	    = "";						//SDK版本
+$p23_charset   	    = "UTF-8";					//编码格式
+$p24_remark    	    = "";						//备注
+$p25_terminal  	    = "2";				        //商户终端设备值
+// 终端设备值1 pc 2 ios  3 安卓
+$p26_ext1     		= ""; 				        //预留参数
+$p27_ext2    		= "";				        //预留参数
+$p28_ext3     		= "";				        //预留参数
+$p29_ext4     		= "";				        //预留参数
 */
 
-// 交易结果通知
+//NotifyResult 交易结果通知
 type NotifyResult struct {
-	P1_usercode      string `json:"p1_usercode"`
-	P2_order         string `json:"p2_order"`
-	P3_money         string `json:"p3_money"`
-	P4_status        string `json:"p4_status"`
-	P5_jtpayorder    string `json:"p5_jtpayorder"`
-	P6_paymethod     string `json:"p6_paymethod"`
-	P7_paychannelnum string `json:"p7_paychannelnum"`
-	P8_charset       string `json:"p8_charset"`
-	P9_signtype      string `json:"p9_signtype"`
-	P10_sign         string `json:"p10_sign"`
-	P11_remark       string `json:"p11_remark"`
+	P1_yingyongnum    string `json:"p1_yingyongnum"`
+	P2_ordernumber    string `json:"p2_ordernumber"`
+	P3_money          string `json:"p3_money"`
+	P4_zfstate        string `json:"p4_zfstate"`
+	P5_orderid        string `json:"p5_orderid"`
+	P6_productcode    string `json:"p6_productcode"`
+	P7_bank_card_code string `json:"p7_bank_card_code"`
+	P8_charset        string `json:"p8_charset"`
+	P9_signtype       string `json:"p9_signtype"`
+	P10_sign          string `json:"p10_sign"`
+	P11_pdesc         string `json:"p11_pdesc"`
+	P12_remark        string `json:"p12_remark"`
+	P13_zfmoney       string `json:"p13_zfmoney"`
 }
 
-//// Parse the reponse message
-//func ParseNotifyResult(resp []byte) (*NotifyResult, error) {
-//	result := new(NotifyResult)
-//	err := json.Unmarshal(resp, result)
-//	if err != nil {
-//		return result, err
-//	}
-//	return result, nil
-//}
+// ParseNotifyResult2 Parse the reponse message
+func ParseNotifyResult2(resp []byte) (*NotifyResult, error) {
+	result := new(NotifyResult)
+	err := json.Unmarshal(resp, result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
 
 // ParseNotifyResult convert the string to struct
 func ParseNotifyResult(resp []byte) (*NotifyResult, error) {
@@ -99,28 +107,32 @@ func ParseNotifyResult(resp []byte) (*NotifyResult, error) {
 			return nil, errors.New("args error")
 		}
 		switch args[0] {
-		case "p1_usercode":
-			result.P1_usercode = args[1]
-		case "p2_order":
-			result.P2_order = args[1]
+		case "p1_yingyongnum":
+			result.P1_yingyongnum = args[1]
+		case "p2_ordernumber":
+			result.P2_ordernumber = args[1]
 		case "p3_money":
 			result.P3_money = args[1]
-		case "p4_status":
-			result.P4_status = args[1]
-		case "p5_jtpayorder":
-			result.P5_jtpayorder = args[1]
-		case "p6_paymethod":
-			result.P6_paymethod = args[1]
-		case "p7_paychannelnum":
-			result.P7_paychannelnum = args[1]
+		case "p4_zfstate":
+			result.P4_zfstate = args[1]
+		case "p5_orderid":
+			result.P5_orderid = args[1]
+		case "p6_productcode":
+			result.P6_productcode = args[1]
+		case "p7_bank_card_code":
+			result.P7_bank_card_code = args[1]
 		case "p8_charset":
 			result.P8_charset = args[1]
 		case "p9_signtype":
 			result.P9_signtype = args[1]
 		case "p10_sign":
 			result.P10_sign = args[1]
-		case "p11_remark":
-			result.P11_remark = args[1]
+		case "p11_pdesc":
+			result.P11_pdesc = args[1]
+		case "p12_remark":
+			result.P12_remark = args[1]
+		case "p13_zfmoney":
+			result.P13_zfmoney = args[1]
 		default:
 			//TODO
 		}
@@ -129,15 +141,17 @@ func ParseNotifyResult(resp []byte) (*NotifyResult, error) {
 }
 
 /*
-p1_usercode 用户编号 文本 (必须)商户在竣付通的商户号。
-p2_order 订单号 文本 (必须)商户提交的订单号。
-p3_money 金额 货币 (必须)该次交易金额(以该金额为准)。
-p4_status 支付结果 文本 (必须)支付返回结果 1 代表成功,其 他为失败。
-p5_jtpayorder 竣付通订单号 文本 (必须)返回竣付通的订单号。
-p6_paymethod 商户支付方式 文本 (必须)订单的支付方式。
-p7_paychannelnum 支付通道编码 文本 微信不回调此参数。
-p8_charset 编码格式 文本 (必须)商户提交订单时候传递的编码 格式。
-p9_signtype 签名验证方式 文本 (必须)签名验证方式。
-p10_sign 验证签名 文本 MD5(p1_usercode&p2_order&p3_ money&p4_status&p5_jtpayorder &p6_paymethod&&p8_charset&p 9_signtype&CompKey)。各字段中间 添加“&”分隔符,区分不同字段进行 加密验签。注意最后“p9_signtype &MD5key“中间有“&”符号,加密 形式为 MD5 32 位大写字符串。
-p11_remark string(256) 文本 备注,原样返回用户提交的 p24_remark 信息
+p1_yingyongnum 用户编号 Y 商户在竣付通平台的应用 ID。
+p2_ordernumber 订单号 Y 商户提交的订单号。
+p3_money 金额 Y 该次交易金额（以通知金额为准）。无论 商户发起支付时金额采用哪种格式，返回 金额均保留两位小数。
+p4_zfstate 支付结果 Y （必须）支付返回结果 1 代表成功，其他 为失败。
+p5_orderid 竣付通订单号 Y （必须）返回竣付通的订单号。
+p6_productcode 商户支付方式 Y （必须）订单的支付方式。
+p7_bank_card_code 支付通道编码 N
+p8_charset 编码格式 Y （必须）商户提交订单时候传递的编码格 式
+p9_signtype 签名验证方式 Y （必须）签名验证方式。
+p10_sign 验证签名 Y 格式为 32 位大写字符串，签名算法见 5.2 签名算法
+p11_pdesc string（256） Y 备注，原样返回用户提交的 p20_pdesc 信息
+p12_remark string（256） Y 备注，原样返回用户提交的 p24_remark 信息
+p13_zfmoney 金额 Y 实际支付金额，保留两位小数
 */

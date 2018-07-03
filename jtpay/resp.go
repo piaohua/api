@@ -10,7 +10,7 @@ import (
 	"unicode"
 )
 
-//订单号
+//GenOrderid 订单号
 func GenOrderid(usercode, ordertime string) (s string) {
 	t := time.Now().UnixNano()
 	r := rand.NewSource(t)
@@ -25,24 +25,33 @@ func GenOrderid(usercode, ordertime string) (s string) {
 	return
 }
 
-//p1_ usercode + "&" +p2_ order + "&" +p3_ money + "&" +p4_returnurl + "&"
-//+p5_ noticeurl + "&" +p6_ordertime +CompKey 连接起来进行 MD5 加密后 32 位大写字符串,
-//(参数之 间必须添加&符号,最后 p6_ordertime 和 CompKey 之间 不加&符号
-//。CompKey 为商户的 秘钥)目前只限定 md5 加密。 必填
-func p7sign(p1_usercode, p2_order, p3_money, p4_returnurl,
-	p5_noticeurl, p6_ordertime, CompKey string) (s string) {
-	s = p1_usercode + "&" + p2_order + "&" + p3_money + "&" +
-		p4_returnurl + "&" + p5_noticeurl + "&" + p6_ordertime + CompKey
-	return ToUpper(Md5(s))
+//p1_yingyongnum + "&" +p2_ordernumber + "&" +p3_money + "&" +p6_ordertime + "&"
+//+p7_productcode + "&" +CompKey 连接起来进行 MD5 加密后 32 位大写字符串,
+func p8sign(o *JTpayOrder, CompKey string) (s string) {
+	s = o.P1_yingyongnum + "&" + o.P2_ordernumber + "&" + o.P3_money + "&" +
+		o.P6_ordertime + "&" + o.P7_productcode + "&" + CompKey
+	return Md5(s)
 }
 
-//p10_sign 验证签名 文本 MD5(p1_usercode&p2_order&p3_ money&p4_status&p5_jtpayorder &p6_paymethod&&p8_charset&p 9_signtype&CompKey)。
-//各字段中间 添加“&”分隔符,区分不同字段进行 加密验签。注意最后“p9_signtype &MD5key“中间有“&”符号,加密 形式为 MD5 32 位大写字符串。
-func p10sign(p1_usercode, p2_order, p3_money, p4_status, p5_jtpayorder,
-	p6_paymethod, p8_charset, p9_signtype, CompKey string) (s string) {
-	s = p1_usercode + "&" + p2_order + "&" + p3_money + "&" +
-		p4_status + "&" + p5_jtpayorder + "&" + p6_paymethod + "&&" +
-		p8_charset + "&" + p9_signtype + "&" + CompKey
+/*
+$p10_sign=strtoupper(md5($p1_yingyongnum."&".
+$p2_ordernumber."&".
+$p3_money."&".
+$p4_zfstate."&".
+$p5_orderid."&".
+$p6_productcode."&".
+$p7_bank_card_code."&".
+$p8_charset."&".
+$p9_signtype."&".
+$p11_pdesc."&".
+$p13_zfmoney."&".
+$compkey));
+*/
+func p10sign(r *NotifyResult, CompKey string) (s string) {
+	s = r.P1_yingyongnum + "&" + r.P2_ordernumber + "&" + r.P3_money + "&" +
+		r.P4_zfstate + "&" + r.P5_orderid + "&" + r.P6_productcode + "&" +
+		r.P7_bank_card_code + "&" + r.P8_charset + "&" + r.P9_signtype + "&" +
+		r.P11_pdesc + "&" + r.P13_zfmoney + "&" + CompKey
 	return ToUpper(Md5(s))
 }
 
@@ -52,12 +61,12 @@ func customip(ip string) string {
 	return strings.Join(s, "_")
 }
 
-//下单时间
+//OrderTimeStr 下单时间
 func OrderTimeStr() string {
 	return time.Now().Format("20060102150405")
 }
 
-//golang make the caracter in a string uppercase
+//ToUpper golang make the caracter in a string uppercase
 func ToUpper(str string) string {
 	var s string
 	for _, v := range str {
@@ -66,7 +75,7 @@ func ToUpper(str string) string {
 	return s
 }
 
-// md5 加密
+// Md5 加密
 func Md5(str string) string {
 	h := md5.New()
 	h.Write([]byte(str))
