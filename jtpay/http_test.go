@@ -18,7 +18,7 @@ func TestPay(t *testing.T) {
 	order := &JTpayOrder{
 		P3_money:       "1",
 		P14_customname: "101409",
-		P17_product:   "3",
+		P17_product:    "3",
 		P19_productnum: "1",
 		P25_terminal:   "2",
 		P7_productcode: "WX",
@@ -40,7 +40,7 @@ func TestPay(t *testing.T) {
 
 func TestVerify(t *testing.T) {
 	cfg := &JTpayConfig{
-		Appid:      "",
+		Appid:         "",
 		CompKey:       "",
 		PlaceOrderUrl: "http://order.z.jtpay.com/jh-web-order/order/receiveOrder",
 	}
@@ -49,17 +49,17 @@ func TestVerify(t *testing.T) {
 		panic(err)
 	}
 	result := &NotifyResult{
-		P1_yingyongnum:      "10231993",
-		P2_ordernumber:         "10231993-20180327000845-48314",
-		P3_money:         "1",
+		P1_yingyongnum:    "10231993",
+		P2_ordernumber:    "10231993-20180327000845-48314",
+		P3_money:          "1",
 		P4_zfstate:        "1",
-		P5_orderid:    "20180326160844234406",
-		P6_productcode:     "3",
+		P5_orderid:        "20180326160844234406",
+		P6_productcode:    "3",
 		P7_bank_card_code: "",
-		P8_charset:       "UTF-8",
-		P9_signtype:      "MD5",
-		P10_sign:         "EC03C50E252D2A3CC550130243A540E9",
-		P11_pdesc:       "",
+		P8_charset:        "UTF-8",
+		P9_signtype:       "MD5",
+		P10_sign:          "EC03C50E252D2A3CC550130243A540E9",
+		P11_pdesc:         "",
 	}
 	//
 	t.Log(trans.NotifyVerify(result))

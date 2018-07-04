@@ -1,9 +1,9 @@
 package jtpay
 
 import (
+	"encoding/json"
 	"errors"
 	"strings"
-	"encoding/json"
 )
 
 //JTpayOrder 下单请求参数
