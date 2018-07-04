@@ -26,7 +26,7 @@ func GenOrderid(usercode, ordertime string) (s string) {
 }
 
 //p1_yingyongnum + "&" +p2_ordernumber + "&" +p3_money + "&" +p6_ordertime + "&"
-//+p7_productcode + "&" +CompKey 连接起来进行 MD5 加密后 32 位大写字符串,
+//+p7_productcode + "&" +CompKey 连接起来进行 MD5 加密
 func p8sign(o *JTpayOrder, CompKey string) (s string) {
 	s = o.P1_yingyongnum + "&" + o.P2_ordernumber + "&" + o.P3_money + "&" +
 		o.P6_ordertime + "&" + o.P7_productcode + "&" + CompKey

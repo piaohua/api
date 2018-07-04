@@ -7,8 +7,8 @@ import (
 
 func TestPay(t *testing.T) {
 	cfg := &JTpayConfig{
-		Appid:      "",
-		CompKey:       "",
+		Appid:      "01018035867501",
+		CompKey:       "040109141916ze44Mfoy",
 		PlaceOrderUrl: "http://order.z.jtpay.com/jh-web-order/order/receiveOrder",
 	}
 	trans, err := NewJTpayTrans(cfg)
@@ -21,6 +21,8 @@ func TestPay(t *testing.T) {
 		P17_product:   "3",
 		P19_productnum: "1",
 		P25_terminal:   "2",
+		P7_productcode: "WX",
+		P16_customip: "192_168_0_253",
 	}
 	order.P1_yingyongnum = trans.Config.Appid
 	t.Logf("appid %s", order.P1_yingyongnum)
@@ -33,7 +35,7 @@ func TestPay(t *testing.T) {
 	t.Logf("resp %s, err %v", resp, err)
 	t.Logf("err %v", err)
 	fmt.Printf("%s\n", order.P8_sign)
-	t.Log(order)
+	t.Logf("order %#v", order)
 }
 
 func TestVerify(t *testing.T) {
