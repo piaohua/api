@@ -7,7 +7,7 @@ import (
 
 func TestPay(t *testing.T) {
 	cfg := &JTpayConfig{
-		Appid:      "01018035867501",
+		Appid:         "01018035867501",
 		CompKey:       "040109141916ze44Mfoy",
 		PlaceOrderUrl: "http://order.z.jtpay.com/jh-web-order/order/receiveOrder",
 	}
@@ -22,7 +22,7 @@ func TestPay(t *testing.T) {
 		P19_productnum: "1",
 		P25_terminal:   "2",
 		P7_productcode: "WX",
-		P16_customip: "192_168_0_253",
+		P16_customip:   "192_168_0_253",
 	}
 	order.P1_yingyongnum = trans.Config.Appid
 	t.Logf("appid %s", order.P1_yingyongnum)
@@ -48,21 +48,37 @@ func TestVerify(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	result := &NotifyResult{
-		P1_yingyongnum:    "10231993",
-		P2_ordernumber:    "10231993-20180327000845-48314",
-		P3_money:          "1",
+	//result := &NotifyResult{
+	//	P1_yingyongnum:    "10231993",
+	//	P2_ordernumber:    "10231993-20180327000845-48314",
+	//	P3_money:          "1",
+	//	P4_zfstate:        "1",
+	//	P5_orderid:        "20180326160844234406",
+	//	P6_productcode:    "3",
+	//	P7_bank_card_code: "",
+	//	P8_charset:        "UTF-8",
+	//	P9_signtype:       "MD5",
+	//	P10_sign:          "EC03C50E252D2A3CC550130243A540E9",
+	//	P11_pdesc:         "",
+	//}
+	//
+	//t.Log(trans.NotifyVerify(result))
+	//
+	notify := &NotifyResult{
+		P1_yingyongnum:    "01018076485101",
+		P2_ordernumber:    "01018076485101-20180713150117-35583",
+		P3_money:          "12.00",
 		P4_zfstate:        "1",
-		P5_orderid:        "20180326160844234406",
-		P6_productcode:    "3",
+		P5_orderid:        "0102018071315011700916",
+		P6_productcode:    "ZFBZZWAP",
 		P7_bank_card_code: "",
 		P8_charset:        "UTF-8",
-		P9_signtype:       "MD5",
-		P10_sign:          "EC03C50E252D2A3CC550130243A540E9",
+		P9_signtype:       "1",
+		P10_sign:          "DECEC550FC4ABB915CB98EAC66D8334A",
 		P11_pdesc:         "",
-	}
-	//
-	t.Log(trans.NotifyVerify(result))
+		P12_remark:        "",
+		P13_zfmoney:       "12.00"}
+	t.Log(trans.NotifyVerify(notify))
 }
 
 //下单页面

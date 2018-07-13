@@ -51,7 +51,9 @@ func p10sign(r *NotifyResult, CompKey string) (s string) {
 	s = r.P1_yingyongnum + "&" + r.P2_ordernumber + "&" + r.P3_money + "&" +
 		r.P4_zfstate + "&" + r.P5_orderid + "&" + r.P6_productcode + "&" +
 		r.P7_bank_card_code + "&" + r.P8_charset + "&" + r.P9_signtype + "&" +
-		r.P11_pdesc + "&" + r.P13_zfmoney + "&" + CompKey
+		r.P11_pdesc + "&" + CompKey
+	//r.P11_pdesc + "&" + r.P13_zfmoney + "&" + CompKey
+	//P26_ext1 = "1.1" 没提交P13_zfmoney不参与验签
 	return ToUpper(Md5(s))
 }
 
